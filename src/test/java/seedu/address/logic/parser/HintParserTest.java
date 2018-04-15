@@ -42,7 +42,10 @@ public class HintParserTest {
         assertEquals(" exit the app", hintParser.generateHint("exit"));
         assertEquals(" show command history", hintParser.generateHint("history"));
         assertEquals(" list, filter, and sort books", hintParser.generateHint("list t/1 a/1 c/1 s/r p/l r/5 by/s"));
+        assertEquals(" lock the app", hintParser.generateHint("lock"));
         assertEquals(" search for books", hintParser.generateHint("search 1 i/1 t/1 a/1 c/1"));
+        assertEquals(" change the password", hintParser.generateHint("setpw old/123 new/12345"));
+        assertEquals(" unlock the app", hintParser.generateHint("unlock 12345"));
     }
 
     @Test
@@ -55,6 +58,7 @@ public class HintParserTest {
         assertEquals(" [s/STATUS] [p/PRIORITY] [r/RATING]", hintParser.generateHint("list t/1 a/1 c/1 by/s"));
         assertEquals(" [KEY_WORDS] [i/ISBN] [t/TITLE] [a/AUTHOR] [c/CATEGORY]", hintParser.generateHint("search"));
         assertEquals(" [a/AUTHOR]", hintParser.generateHint("search i/1 t/1 c/1"));
+        assertEquals(" [old/OLD_PASSWORD] [new/NEW_PASSWORD]", hintParser.generateHint("setpw"));
     }
 
     @Test

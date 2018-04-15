@@ -1,9 +1,11 @@
 package seedu.address.commons.util;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,6 +16,26 @@ import javax.xml.bind.Unmarshaller;
  * Helps with reading from and writing to XML files.
  */
 public class XmlUtil {
+
+    /**
+     * Returns the xml data in the URL as an object of the specified type.
+     *
+     * @param url            Points to a valid URL containing data that match the {@code classToConvert}.
+     *                       Cannot be null.
+     * @param classToConvert The class corresponding to the xml data.
+     *                       Cannot be null.
+     * @throws FileNotFoundException Thrown if the file is missing.
+     * @throws JAXBException         Thrown if the file is empty or does not have the correct format.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getDataFromUrl(URL url, Class<T> classToConvert) throws JAXBException {
+        requireAllNonNull(url, classToConvert);
+
+        JAXBContext context = JAXBContext.newInstance(classToConvert);
+        Unmarshaller um = context.createUnmarshaller();
+
+        return ((T) um.unmarshal(url));
+    }
 
     /**
      * Returns the xml data in the file as an object of the specified type.

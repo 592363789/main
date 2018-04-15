@@ -16,7 +16,7 @@ public class SetPasswordCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Successfully changed your password.";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Change your password.\n"
-            + "Parameters: [old/OLDPW] [new/NEWPW]\n"
+            + "Parameters: [old/OLD_PASSWORD] [new/NEW_PASSWORD]\n"
             + "Example: " + COMMAND_WORD + " old/123456 new/abcde ";
     public static final String MESSAGE_WRONG_PASSWORD = "Incorrect old password. Please try again.";
 

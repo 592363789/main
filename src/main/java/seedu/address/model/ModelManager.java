@@ -64,7 +64,7 @@ public class ModelManager extends ComponentManager implements Model {
         this.aliases = new UniqueAliasList(aliasList);
         this.displayAliasList = new SortedList<>(this.aliases.asObservableList(), ALIAS_NAME_COMPARATOR);
 
-        if (LockManager.getInstance().isLocked()) {
+        if (LockManager.getInstance().isPasswordProtected()) {
             updateBookListFilter(PREDICATE_HIDE_ALL_BOOKS);
         }
     }

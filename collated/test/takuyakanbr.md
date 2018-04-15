@@ -1020,16 +1020,6 @@ public class NetworkManagerTest {
         });
     }
 
-    /**
-     * Returns a random 8 character string to be used as a prefix to a filename.
-     */
-    private static String generateRandomPrefix() {
-        byte[] randomBytes = new byte[RANDOM_BYTE_LENGTH];
-        new Random().nextBytes(randomBytes);
-        byte[] encodedBytes = Base64.getEncoder().encode(randomBytes);
-        return new String(encodedBytes).replace("/", "-");
-    }
-}
 ```
 ###### \java\systemtests\AddAliasCommandSystemTest.java
 ``` java

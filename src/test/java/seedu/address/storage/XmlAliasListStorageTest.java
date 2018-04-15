@@ -6,6 +6,7 @@ import static seedu.address.testutil.TypicalAliases.SEARCH;
 import static seedu.address.testutil.TypicalAliases.UNREAD;
 import static seedu.address.testutil.TypicalAliases.getTypicalAliasList;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Rule;
@@ -68,7 +69,7 @@ public class XmlAliasListStorageTest {
 
     @Test
     public void readAndSaveAliasList_allInOrder_success() throws Exception {
-        String filePath = testFolder.getRoot().getPath() + "TempAliasList.xml";
+        String filePath = testFolder.getRoot().getPath() + File.separator + "TempAliasList.xml";
         UniqueAliasList original = getTypicalAliasList();
         XmlAliasListStorage xmlAliasListStorage = new XmlAliasListStorage(filePath);
 

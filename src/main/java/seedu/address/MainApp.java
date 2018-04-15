@@ -17,6 +17,7 @@ import seedu.address.commons.core.Version;
 import seedu.address.commons.events.model.AppUnlockedEvent;
 import seedu.address.commons.events.model.PasswordChangedEvent;
 import seedu.address.commons.events.ui.ExitAppRequestEvent;
+import seedu.address.commons.events.ui.NewResultAvailableEvent;
 import seedu.address.commons.exceptions.DataConversionException;
 import seedu.address.commons.util.ConfigUtil;
 import seedu.address.commons.util.StringUtil;
@@ -52,7 +53,7 @@ import seedu.address.ui.UiManager;
  */
 public class MainApp extends Application {
 
-    public static final Version VERSION = new Version(1, 5, 0, true);
+    public static final Version VERSION = new Version(1, 5, 0, false);
 
     private static final Logger logger = LogsCenter.getLogger(MainApp.class);
 
@@ -228,6 +229,10 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         logger.info("Starting Bibliotek " + MainApp.VERSION);
         ui.start(primaryStage);
+
+        if (LockManager.getInstance().isPasswordProtected()) {
+            EventsCenter.getInstance().post(new NewResultAvailableEvent("Unlock the app using the unlock command."));
+        }
     }
 
     @Override

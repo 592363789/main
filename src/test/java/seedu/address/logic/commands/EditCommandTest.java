@@ -1,5 +1,5 @@
 package seedu.address.logic.commands;
-
+//@@author 592363789
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -37,6 +37,7 @@ import seedu.address.testutil.EditDescriptorBuilder;
 /**
  * Contains integration tests (interaction with the Model) and unit tests for EditCommand.
  */
+//@@author
 public class EditCommandTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();

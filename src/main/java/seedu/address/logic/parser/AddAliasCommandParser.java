@@ -18,7 +18,7 @@ import seedu.address.model.alias.Alias;
 public class AddAliasCommandParser implements Parser<AddAliasCommand> {
 
     private static final Pattern ALIAS_FORMAT = Pattern.compile("^\\S+$");
-    private static final Pattern COMMAND_FORMAT = Pattern.compile("(?<prefix>((?! \\w+\\/.*)[\\S ])+)(?<arguments>.*)");
+    private static final Pattern COMMAND_FORMAT = Pattern.compile("(?<prefix>((?! \\w+\\/.*)[\\S ])+)(?<namedArgs>.*)");
 
     @Override
     public AddAliasCommand parse(String args) throws ParseException {
@@ -62,7 +62,7 @@ public class AddAliasCommandParser implements Parser<AddAliasCommand> {
     }
 
     private static Alias createAlias(String aliasName, Matcher commandMatcher) {
-        return new Alias(aliasName, commandMatcher.group("prefix"), commandMatcher.group("arguments"));
+        return new Alias(aliasName, commandMatcher.group("prefix"), commandMatcher.group("namedArgs"));
     }
 
     private static void checkCommandFormat(boolean condition) throws ParseException {

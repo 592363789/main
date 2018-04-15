@@ -31,6 +31,7 @@ public class SetPasswordCommandTest {
     @Before
     public void setUp() {
         model = new ModelManager(getTypicalBookShelf(), new UserPrefs());
+        LockManager.getInstance().initialize(LockManager.NO_PASSWORD);
         LockManager.getInstance().setPassword(LockManager.NO_PASSWORD, "testing");
     }
 

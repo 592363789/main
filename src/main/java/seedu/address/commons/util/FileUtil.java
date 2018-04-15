@@ -5,6 +5,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 /**
  * Writes and reads files
@@ -90,4 +91,10 @@ public class FileUtil {
         return pathWithForwardSlash.replace("/", File.separator);
     }
 
+    /**
+     * Copies the content of {@code source} into {@code dest}.
+     */
+    public static void copyFile(File source, File dest) throws IOException {
+        Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    }
 }

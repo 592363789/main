@@ -8,14 +8,20 @@ import static org.mockito.Mockito.mock;
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_BOOK_DISPLAYED_INDEX;
 import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import seedu.address.commons.core.Messages;
 import seedu.address.logic.commands.CommandResult;
+import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.HistoryCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.LockCommand;
+import seedu.address.logic.commands.SetPasswordCommand;
+import seedu.address.logic.commands.UnlockCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
@@ -31,6 +37,16 @@ public class LogicManagerTest {
 
     private Model model = new ModelManager();
     private Logic logic = new LogicManager(model, mock(NetworkManager.class));
+
+    @Before
+    public void setUp() {
+        LockManager.getInstance().initialize(LockManager.NO_PASSWORD);
+    }
+
+    @After
+    public void tearDown() {
+        LockManager.getInstance().initialize(LockManager.NO_PASSWORD);
+    }
 
     @Test
     public void isValidCommand_validCommand_true() {
@@ -113,6 +129,32 @@ public class LogicManagerTest {
         assertCommandSuccess("lst", String.format(Messages.MESSAGE_CORRECTED_COMMAND, "list"), model);
         assertCommandSuccess("",
                 String.format(ListCommand.MESSAGE_SUCCESS, model.getDisplayBookList().size()), model);
+    }
+
+    @Test
+    public void execute_locked() {
+        LockManager.getInstance().lock();
+        assertCommandSuccess("list", Messages.MESSAGE_APP_LOCKED, model);
+        assertCommandSuccess("help", HelpCommand.SHOWING_HELP_MESSAGE, model);
+        assertCommandSuccess("unlock", UnlockCommand.MESSAGE_SUCCESS, model);
+    }
+
+    @Test
+    public void execute_password_notInHistory() {
+        assertCommandSuccess("list",
+                String.format(ListCommand.MESSAGE_SUCCESS, model.getDisplayBookList().size()), model);
+        assertHistoryCorrect("list");
+        assertCommandSuccess("lock", LockCommand.MESSAGE_SUCCESS, model);
+        assertCommandSuccess("unlock ", UnlockCommand.MESSAGE_SUCCESS, model);
+        assertHistoryCorrect("lock", "history", "list");
+        assertCommandSuccess("setpw new/xxx", SetPasswordCommand.MESSAGE_SUCCESS, model);
+        assertHistoryCorrect("history", "lock", "history", "list");
+    }
+
+    @Test
+    public void getActiveList_modifyList_throwsUnsupportedOperationException() {
+        thrown.expect(UnsupportedOperationException.class);
+        logic.getActiveList().remove(0);
     }
 
     @Test

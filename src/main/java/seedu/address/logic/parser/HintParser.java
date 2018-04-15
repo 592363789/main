@@ -9,7 +9,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_COMMAND_STRING;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ISBN;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ISBN_STRING;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEW;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NEW_STRING;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_OLD;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_OLD_STRING;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PRIORITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PRIORITY_STRING;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_RATING;
@@ -220,6 +222,10 @@ public class HintParser {
             return "RATING";
         case PREFIX_SORT_BY_STRING:
             return "SORT_BY";
+        case PREFIX_OLD_STRING:
+            return "OLD_PASSWORD";
+        case PREFIX_NEW_STRING:
+            return "NEW_PASSWORD";
         case PREFIX_COMMAND_STRING:
             return "COMMAND";
         default:

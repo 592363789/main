@@ -1,10 +1,12 @@
 = Qiu Siqi - Project Portfolio
 :imagesDir: ../images
 :stylesDir: ../stylesheets
+:linkattrs:
+:repoURL: https://github.com/CS2103JAN2018-F14-B4/main
 
-== PROJECT: Bibliotek
+== PROJECT: link:{repoURL}[Bibliotek]
 
----
+This portfolio page showcases my contributions to Bibliotek.
 
 == Overview
 
@@ -21,7 +23,7 @@ Bibliotek is a free book cataloguing application that is simple, fast, and easy 
 ** What it does: Allows the user to view his recently selected books.
 ** Justification: The user may have recently selected a book in one of his/her searches, and regret not adding that book into his/her book shelf. With this function, he/she can easily locate that book without having to perform the searches again.
 
-* *Code contributed*: [https://github.com/CS2103JAN2018-F14-B4/main/blob/master/collated/functional/qiu-siqi.md[Functional code]] [https://github.com/CS2103JAN2018-F14-B4/main/blob/master/collated/test/qiu-siqi.md.com[Test code]]
+* *Code contributed*: [https://github.com/CS2103JAN2018-F14-B4/main/blob/master/collated/functional/qiu-siqi.md[Functional code]] [https://github.com/CS2103JAN2018-F14-B4/main/blob/master/collated/test/qiu-siqi.md[Test code]]
 
 * *Other contributions*:
 
@@ -29,13 +31,14 @@ Bibliotek is a free book cataloguing application that is simple, fast, and easy 
 *** Maintained the issue tracker on Github.
 ** Enhancements to existing features:
 *** Morphed Address Book 4 into Bibliotek (Pull requests https://github.com/CS2103JAN2018-F14-B4/main/pull/56[#56], https://github.com/CS2103JAN2018-F14-B4/main/pull/57[#57], https://github.com/CS2103JAN2018-F14-B4/main/pull/72[#72])
-*** Fixed bugs (Pull requests https://github.com/CS2103JAN2018-F14-B4/main/pull/104[#104], https://github.com/CS2103JAN2018-F14-B4/main/pull/107[#107], https://github.com/CS2103JAN2018-F14-B4/main/pull/116[#116])
-*** Refactored code (Pull requests https://github.com/CS2103JAN2018-F14-B4/main/pull/156[#156], https://github.com/CS2103JAN2018-F14-B4/main/pull/169[#169])
+*** Refactored code (Pull requests https://github.com/CS2103JAN2018-F14-B4/main/pull/116[#116], https://github.com/CS2103JAN2018-F14-B4/main/pull/156[#156], https://github.com/CS2103JAN2018-F14-B4/main/pull/169[#169])
 *** Made individual commands handle undo themselves (Pull request https://github.com/CS2103JAN2018-F14-B4/main/pull/170[#170])
+*** Added command autocorrection (Pull request https://github.com/CS2103JAN2018-F14-B4/main/pull/171[#171])
 ** Documentation:
-*** Updated the contents of User Guide and Developer Guide: (Pull requests https://github.com/CS2103JAN2018-F14-B4/main/pull/43[#43], https://github.com/CS2103JAN2018-F14-B4/main/pull/67[#67], https://github.com/CS2103JAN2018-F14-B4/main/pull/68[#68], https://github.com/CS2103JAN2018-F14-B4/main/pull/102[#102], https://github.com/CS2103JAN2018-F14-B4/main/pull/155[#155])
+*** Updated the contents of User Guide and Developer Guide: (Pull requests https://github.com/CS2103JAN2018-F14-B4/main/pull/43[#43], https://github.com/CS2103JAN2018-F14-B4/main/pull/67[#67], https://github.com/CS2103JAN2018-F14-B4/main/pull/68[#68], https://github.com/CS2103JAN2018-F14-B4/main/pull/102[#102], https://github.com/CS2103JAN2018-F14-B4/main/pull/155[#155], https://github.com/CS2103JAN2018-F14-B4/main/pull/187[#187], https://github.com/CS2103JAN2018-F14-B4/main/pull/188[#188])
 ** Community:
 *** PRs reviewed: (Pull requests https://github.com/CS2103JAN2018-F14-B4/main/pull/58[#58], https://github.com/CS2103JAN2018-F14-B4/main/pull/62[#62], https://github.com/CS2103JAN2018-F14-B4/main/pull/91[#91], https://github.com/CS2103JAN2018-F14-B4/main/pull/134[#134])
+*** Reported bugs and suggestions for other teams in the class (issues https://github.com/CS2103JAN2018-W10-B2/main/issues/76[#76], https://github.com/CS2103JAN2018-W10-B2/main/issues/80[#80], https://github.com/CS2103JAN2018-W10-B2/main/issues/83[#83], https://github.com/CS2103JAN2018-W10-B2/main/issues/87[#87])
 
 == Contributions to the User Guide
 

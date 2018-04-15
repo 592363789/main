@@ -4,7 +4,7 @@ import seedu.address.commons.events.BaseEvent;
 import seedu.address.model.alias.ReadOnlyAliasList;
 
 /**
- * Indicates the {@code UniqueAliasList} in the model has changed
+ * Indicates the {@code UniqueAliasList} in the model has changed.
  */
 public class AliasListChangedEvent extends BaseEvent {
 

@@ -4,7 +4,9 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import seedu.address.commons.core.EventsCenter;
 import seedu.address.commons.events.model.AppUnlockedEvent;
+import seedu.address.commons.events.ui.ActiveListChangedEvent;
 import seedu.address.logic.LockManager;
+import seedu.address.model.ActiveListType;
 import seedu.address.model.Model;
 
 //@@author 592363789
@@ -20,8 +22,8 @@ public class UnlockCommand extends Command {
             + "Example: " + COMMAND_WORD + " 123456";
 
     public static final String MESSAGE_SUCCESS = "Successfully unlocked the app.";
-    public static final String MESSAGE_NOT_LOCKED = "The app is not locked.";
-    public static final String MESSAGE_WRONG_PASSWORD = "Incorrect password. Please try again.";
+    protected static final String MESSAGE_NOT_LOCKED = "The app is not locked.";
+    protected static final String MESSAGE_WRONG_PASSWORD = "Incorrect password. Please try again.";
 
     private String password;
 
@@ -40,6 +42,9 @@ public class UnlockCommand extends Command {
         if (LockManager.getInstance().unlock(password)) {
             EventsCenter.getInstance().post(new AppUnlockedEvent());
             model.updateBookListFilter(Model.PREDICATE_SHOW_ALL_BOOKS);
+
+            model.setActiveListType(ActiveListType.BOOK_SHELF);
+            EventsCenter.getInstance().post(new ActiveListChangedEvent());
             return new CommandResult(MESSAGE_SUCCESS);
         } else {
             return new CommandResult(MESSAGE_WRONG_PASSWORD);

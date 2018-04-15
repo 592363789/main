@@ -67,10 +67,10 @@ public abstract class BibliotekSystemTest {
 
     @Before
     public void setUp() {
+        LockManager.getInstance().initialize(LockManager.NO_PASSWORD);
         setupHelper = new SystemTestSetupHelper();
         testApp = setupHelper.setupApplication(this::getInitialData, getDataFileLocation());
         mainWindowHandle = setupHelper.setupMainWindowHandle();
-        LockManager.getInstance().unlock(LockManager.getInstance().getPassword());
 
         assertApplicationStartingStateIsCorrect();
     }
@@ -80,6 +80,7 @@ public abstract class BibliotekSystemTest {
         setupHelper.tearDownStage();
         EventsCenter.clearSubscribers();
         WebViewManager.getInstance().cleanUp();
+        LockManager.getInstance().initialize(LockManager.NO_PASSWORD);
     }
 
     /**

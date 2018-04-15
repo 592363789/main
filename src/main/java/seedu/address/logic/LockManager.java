@@ -33,6 +33,7 @@ public class LockManager {
             this.passwordHash = passwordHash;
         } else {
             this.passwordHash = NO_PASSWORD;
+            this.password = NO_PASSWORD;
         }
         isLocked = !this.passwordHash.isEmpty();
         hasLoggedIn = !isLocked;

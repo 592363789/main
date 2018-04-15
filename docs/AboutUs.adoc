@@ -31,7 +31,7 @@ Responsibilities: Logic
 
 === Shi Jin
 image::592363789.png[width="150", align="left"]
-{empty}[http://github.com/592363789[github]] [<<johndoe#, portfolio>>]
+{empty}[http://github.com/592363789[github]] [<<592363789#, portfolio>>]
 
 Role: Developer +
 Responsibilities: Storage
@@ -40,7 +40,7 @@ Responsibilities: Storage
 
 === Liu Jianghao
 image::fishtt.png[width="150", align="left"]
-{empty}[http://github.com/fishTT[github]] [<<johndoe#, portfolio>>]
+{empty}[http://github.com/fishTT[github]] [<<jianghao#, portfolio>>]
 
 Role: Developer +
 Responsibilities: UI

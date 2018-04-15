@@ -21,6 +21,7 @@ import seedu.address.network.Network;
 //@@author 592363789
 public class UnlockCommandTest {
 
+    private static final String DEFAULT_PW = "testing";
     private Model model;
 
     @Before
@@ -28,7 +29,7 @@ public class UnlockCommandTest {
         model = new ModelManager(getTypicalBookShelf(), new UserPrefs());
         // set password + lock
         LockManager.getInstance().initialize(LockManager.NO_PASSWORD);
-        LockManager.getInstance().setPassword(LockManager.NO_PASSWORD, "testing");
+        LockManager.getInstance().setPassword(LockManager.NO_PASSWORD, DEFAULT_PW);
         LockManager.getInstance().lock();
     }
 
@@ -40,12 +41,12 @@ public class UnlockCommandTest {
     @Test
     public void equals() {
 
-        UnlockCommand unlockCommand = new UnlockCommand("testing");
+        UnlockCommand unlockCommand = new UnlockCommand(DEFAULT_PW);
 
-        UnlockCommand thesameCommand = new UnlockCommand("testing");
+        UnlockCommand sameCommand = new UnlockCommand(DEFAULT_PW);
 
         // same value -> returns true
-        assertTrue(unlockCommand.equals(thesameCommand));
+        assertTrue(unlockCommand.equals(sameCommand));
 
         // same object -> returns true
         assertTrue(unlockCommand.equals(unlockCommand));
@@ -62,21 +63,38 @@ public class UnlockCommandTest {
     }
 
     @Test
-    public void sameKeyTest() {
-        UnlockCommand unlock = new UnlockCommand("testing");
-        unlock.setData(model, mock(Network.class), new CommandHistory(), new UndoStack());
-        CommandResult commandResult = unlock.execute();
+    public void samePasswordTest() {
+        CommandResult commandResult = prepareUnlockCommand(DEFAULT_PW).execute();
 
         assertEquals(UnlockCommand.MESSAGE_SUCCESS, commandResult.feedbackToUser);
     }
 
     @Test
-    public void differentKeyTest() {
-        UnlockCommand unlock = new UnlockCommand("test");
-        unlock.setData(model, mock(Network.class), new CommandHistory(), new UndoStack());
-        CommandResult commandResult = unlock.execute();
+    public void wrongPasswordTest() {
+        CommandResult commandResult = prepareUnlockCommand("").execute();
 
         assertEquals(UnlockCommand.MESSAGE_WRONG_PASSWORD, commandResult.feedbackToUser);
+    }
+
+    @Test
+    public void differentPasswordTest() {
+        CommandResult commandResult = prepareUnlockCommand(DEFAULT_PW + "x").execute();
+
+        assertEquals(UnlockCommand.MESSAGE_WRONG_PASSWORD, commandResult.feedbackToUser);
+    }
+
+    @Test
+    public void notLockedTest() {
+        LockManager.getInstance().unlock(DEFAULT_PW);
+        CommandResult commandResult = prepareUnlockCommand(DEFAULT_PW).execute();
+
+        assertEquals(UnlockCommand.MESSAGE_NOT_LOCKED, commandResult.feedbackToUser);
+    }
+
+    private UnlockCommand prepareUnlockCommand(String key) {
+        UnlockCommand unlock = new UnlockCommand(key);
+        unlock.setData(model, mock(Network.class), new CommandHistory(), new UndoStack());
+        return unlock;
     }
 
 }

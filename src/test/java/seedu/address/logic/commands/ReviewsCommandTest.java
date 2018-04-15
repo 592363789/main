@@ -21,13 +21,12 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.commons.events.ui.ShowBookReviewsRequestEvent;
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.UndoStack;
-import seedu.address.model.ActiveListType;
-import seedu.address.model.BookShelf;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.book.Book;
 import seedu.address.network.NetworkManager;
+import seedu.address.testutil.TestUtil;
 import seedu.address.ui.testutil.EventsCollectorRule;
 
 //@@author qiu-siqi
@@ -72,11 +71,11 @@ public class ReviewsCommandTest {
 
     @Test
     public void execute_validIndexSearchResults_success() {
-        prepareSearchResultListInModel(model);
+        TestUtil.prepareSearchResultListInModel(model);
 
         ReviewsCommand reviewsCommand = prepareCommand(INDEX_FIRST_BOOK);
         ModelManager expectedModel = new ModelManager(model.getBookShelf(), new UserPrefs());
-        prepareSearchResultListInModel(expectedModel);
+        TestUtil.prepareSearchResultListInModel(expectedModel);
 
         assertCommandSuccess(reviewsCommand, model,
                 prepareExpectedMessage(model.getSearchResultsList(), INDEX_FIRST_BOOK), expectedModel);
@@ -85,7 +84,7 @@ public class ReviewsCommandTest {
 
     @Test
     public void execute_invalidIndexSearchResults_failure() {
-        prepareSearchResultListInModel(model);
+        TestUtil.prepareSearchResultListInModel(model);
 
         ReviewsCommand reviewsCommand = prepareCommand(Index.fromOneBased(model.getSearchResultsList().size() + 1));
 
@@ -94,11 +93,11 @@ public class ReviewsCommandTest {
 
     @Test
     public void execute_validIndexRecentBooks_success() {
-        prepareRecentBooksListInModel(model);
+        TestUtil.prepareRecentBooksListInModel(model);
 
         ReviewsCommand reviewsCommand = prepareCommand(INDEX_FIRST_BOOK);
         ModelManager expectedModel = new ModelManager(model.getBookShelf(), new UserPrefs());
-        prepareRecentBooksListInModel(expectedModel);
+        TestUtil.prepareRecentBooksListInModel(expectedModel);
 
         assertCommandSuccess(reviewsCommand, model,
                 prepareExpectedMessage(model.getRecentBooksList(), INDEX_FIRST_BOOK), expectedModel);
@@ -107,7 +106,7 @@ public class ReviewsCommandTest {
 
     @Test
     public void execute_invalidIndexRecentBooks_failure() {
-        prepareRecentBooksListInModel(model);
+        TestUtil.prepareRecentBooksListInModel(model);
 
         ReviewsCommand reviewsCommand = prepareCommand(Index.fromOneBased(model.getRecentBooksList().size() + 1));
 
@@ -134,26 +133,6 @@ public class ReviewsCommandTest {
 
         // different book -> returns false
         assertFalse(reviewsFirstCommand.equals(reviewsSecondCommand));
-    }
-
-    /**
-     * Set up {@code model} with a non-empty search result list and
-     * switch active list to search results list.
-     */
-    private void prepareSearchResultListInModel(Model model) {
-        model.setActiveListType(ActiveListType.SEARCH_RESULTS);
-        BookShelf bookShelf = getTypicalBookShelf();
-        model.updateSearchResults(bookShelf);
-    }
-
-    /**
-     * Set up {@code model} with a non-empty recently selected books list and
-     * switch active list to recent books list.
-     */
-    private void prepareRecentBooksListInModel(Model model) {
-        model.setActiveListType(ActiveListType.RECENT_BOOKS);
-        BookShelf bookShelf = getTypicalBookShelf();
-        bookShelf.getBookList().forEach(model::addRecentBook);
     }
 
     /**

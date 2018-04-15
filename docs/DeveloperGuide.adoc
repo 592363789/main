@@ -369,7 +369,7 @@ This results in the execution of the following method in `SearchCommand`:
     }
 ----
 
-Note that this method is run on the JavaFX thread (using `Platform#runLater`) because it will result in updates to the book list panel.
+NOTE: The above method is run on the JavaFX thread (using `Platform#runLater`) because it will result in updates to the book list panel.
 If such updates are not done on the JavaFX thread, JavaFX will throw an `IllegalStateException`.
 
 ==== Design Considerations
@@ -403,7 +403,11 @@ If such updates are not done on the JavaFX thread, JavaFX will throw an `Illegal
 // end::search2[]
 
 // tag::undoredo[]
-=== Undo feature
+=== Undo previous command
+
+The `undo` command allows the user to undo a previous command that caused changes to the book shelf.
+This allows the user to easily reverse their actions.
+
 ==== Current Implementation
 
 The undo mechanism is facilitated by an `UndoStack`, which resides inside `LogicManager`. It supports undoing of commands that modifies the state of the book shelf (e.g. `add`, `edit`). Such commands will inherit from `UndoableCommand`.
@@ -511,7 +515,9 @@ image::UndoRedoActivityDiagram.png[width="550"]
 // end::undoredo[]
 
 // tag::edit[]
-=== Edit status, priority, and rating of books: `edit` command
+=== Edit status, priority, and rating of books
+
+The `edit` command allows the user to change the priority, status and rating of books in his/her book shelf to facilitate organization and management of books.
 
 ==== Current implementation
 
@@ -529,13 +535,6 @@ Sequence Diagram
 
 image::editseq.png[width="550"]
 
-Default value of the book.
-
-image::defaultbook.png[width="550"]
-
-The book after you edit (r/4, s/r, p/h).
-
-image::newbook.png[width="550"]
 
 ==== Design considerations
 
@@ -559,7 +558,7 @@ image::newbook.png[width="550"]
 // end::edit[]
 
 // tag::recent[]
-=== View recently selected books: `recent` command
+=== View recently selected books
 
 The `recent` command allows the user to view books that he/she recently selected.
 This allows the user to easily look back for a particular book, and to add it into his/her book shelf without having to perform a search again.
@@ -567,7 +566,7 @@ This allows the user to easily look back for a particular book, and to add it in
 ==== Current implementation
 
 Recently selected books are stored in a `UniqueBookCircularList` which resides in `ModelManager`.
-`Model` exposes a method `addRecentBook(Book)` to add new book selections. Whenever a new book is selected, `LogicManager` handles the `BookListSelectionChangedEvent` and adds the book into the list.
+`Model` exposes a method `addRecentBook(Book)` to add new book selections. Whenever a new book is selected, `LogicManager` handles the `BookListSelectionChangedEvent` and adds the book into the list using `addRecentBook(Book)`.
 
 When `recent` is entered, it will be parsed into a `RecentCommand`, which when executed, sets the `ActiveListType` to `RECENT_BOOKS`.
 It then posts `ActiveListChangedEvent` to the `EventCenter` to signal this change. The interaction between components is shown in the diagram below.
@@ -635,7 +634,7 @@ by only showing these books.
 // end::recent[]
 
 // tag::library[]
-=== Check for availability of book in NLB library: `library` command
+=== Check for availability of book in NLB library
 
 The `library` command allows the user to easily check for the availability of books in NLB libraries.
 This eliminates the need to manually enter search information into the NLB catalogue. The user can use this information to decide when or whether to read a book.
@@ -677,8 +676,7 @@ Once the necessary result is obtained, the following method in `LibraryCommand` 
 ----
     private void onSuccessfulRequest(String result, Book book) {
         EventsCenter.getInstance().post(new ShowLibraryResultRequestEvent(result));
-        EventsCenter.getInstance().post(new NewResultAvailableEvent(
-                String.format(MESSAGE_SUCCESS, book)));
+        EventsCenter.getInstance().post(new NewResultAvailableEvent(String.format(MESSAGE_SUCCESS, book)));
     }
 ----
 
@@ -687,7 +685,7 @@ The loaded page is post-processed using a script to show only the relevant secti
 
 ==== Design considerations
 
-===== Aspect: How to show the book availability
+===== Aspect: How to show availability of the book
 
 * **Alternative 1 (current choice):** Load the webpage using a `WebView`.
 ** Pros: Immune to changes in structure of that webpage.
@@ -698,76 +696,169 @@ The loaded page is post-processed using a script to show only the relevant secti
 
 ===== Aspect: Using advanced search versus basic search
 
-* **Alternative 1 (current choice):** Perform basic search, using a HTTP GET request.
+* **Alternative 1 (current choice):** Perform basic search, which uses a HTTP GET request.
 ** Pros: Faster response time.
-** Cons: Searched keyword seem to only be matched to title or authors.
-* **Alternative 2:** Perform advanced search, using a HTTP POST request.
-** Pros: Can limit the search results using more parameters such as year or ISBN.
+** Cons: Searched keyword seems to be matched to title or authors only.
+* **Alternative 2:** Perform advanced search, which uses a HTTP POST request.
+** Pros: Able to limit the search results using more parameters such as publication year or ISBN.
 ** Cons: Slower response time.
 
 ===== Aspect: Whether to load in `WebView` directly or pre-process through `Network` component
 
-* **Alternative 1 (current choice):** Pre-process HTTP request response in `Network` component, then send intended URL to `WebView`.
-** Pros: Processing happens behind the scene, and does not distract user.
-** Cons: User is subject to waiting times without feedback on progress. Furthermore the control flow becomes more complicated since an URL still needs to be passed to and loaded on the `WebView` eventually.
+* **Alternative 1 (current choice):** Pre-process HTTP response in `Network` component, then send intended URL to `WebView`.
+** Pros: Processing happens behind the scene, and does not distract the user.
+** Cons: User is subject to waiting times without feedback on progress. Furthermore, the control flow becomes more complicated since a URL still needs to be passed to and loaded on the `WebView` eventually.
 * **Alternative 2:** Load search URL in `WebView` and navigate to intended page using script.
 ** Pros: Easier to implement. Eliminate the need to modify `Network` component.
 ** Cons: User will be able to see the navigation between pages.
 // end::library[]
 
+// tag::alias[]
+=== Command aliasing
+
+The command aliasing system allows the user to specify short command aliases to use in place of the original commands.
+This improves the user experience by reducing the amount of typing the user needs to do.
+
+==== Current Implementation
+
+The user can customize their command aliases using the `addalias` and `deletealias` commands.
+These commands allow the user to add and delete aliases respectively.
+
+===== Adding command aliases
+
+When the user attempts to add a new command alias using `addalias ALIAS_NAME cmd/COMMAND`, the user input will first be
+validated and pre-processed by `AddAliasCommandParser`.
+
+`AddAliasCommandParser` verifies that both the `ALIAS_NAME` and `COMMAND` are non-empty, before
+searching the `COMMAND` for the first occurrence of an empty space that is followed by a named command parameter.
+Using this point, the parser will split the `COMMAND` into two parts - the prefix, and the named arguments.
+The figure below shows an example for the `edit 12 s/reading p/high` command.
+
+image::AliasSampleCommand.png[width="300"]
+
+The searching and splitting is accomplished using the following regular expression.
+
+[source,java]
+----
+    private static final Pattern COMMAND_FORMAT = Pattern.compile("(?<prefix>((?! \\w+\\/.*)[\\S ])+)(?<namedArgs>.*)");
+----
+
+Following this pre-processing step, a new `Alias` will be created using the alias name, command prefix, and named arguments.
+
+[source,java]
+----
+    private static Alias createAlias(String aliasName, Matcher commandMatcher) {
+        return new Alias(aliasName, commandMatcher.group("prefix"), commandMatcher.group("namedArgs"));
+    }
+----
+
+The `Alias` is then added to the `UniqueAliasList` in `ModelManager`, and this update will cause an `AliasListChangedEvent` to be posted.
+The event is handled by `StorageManager`, which saves the updated alias list to `data/aliaslist.xml`.
+
+NOTE: There are currently no checks in place to prevent the user from adding a command alias that refers to an invalid or non-existent built-in command.
+
+===== Using command aliases
+
+The user can use command aliases in the same way they use normal commands. In this section, we assume that the user added `rd` as an alias for `edit s/reading`.
+
+Whenever a command is entered into the command box, the command will be passed by `LogicManager` into `BookShelfParser#applyCommandAlias`,
+where an attempt will be made to apply a matching command alias.
+
+The application of a command alias begins by splitting the input into three parts - the alias name (first word in the input), unnamed arguments, and named arguments.
+The figure below shows an example for the `rd 12 p/high` command.
+
+image::AliasSampleCommand2.png[width="300"]
+
+This splitting is accomplished using the following regular expression.
+
+[source,java]
+----
+    private static final Pattern ALIASED_COMMAND_FORMAT =
+            Pattern.compile(" *(?<aliasName>\\S+)(?<unnamedArgs>((?! [\\w]+\\/.*)[\\S ])*)(?<namedArgs>.*)");
+----
+
+If the alias name matches that of an existing alias, then the alias will be applied.
+Otherwise, the input will be returned unchanged. In this case, the alias named `rd` will be applied.
+
+The result of the application of the alias is a new command that is formed by splicing parts of the user input into the aliased command.
+Using `rd 12 p/high` as the user input, this process is demonstrated in the figure below.
+
+image::AliasApplication.png[width="560"]
+
+The resulting command, `edit 12 s/reading p/high`, will then be parsed and executed, instead of the original user input.
+
+==== Design Considerations
+
+===== Aspect: Inclusion of command parameters in aliases
+
+* **Alternative 1 (current choice):** Allow aliasing of command parameters, together with the command word.
+** Pros: Increases the usefulness of the command aliasing system.
+** Cons: Less straightforward to implement, especially considering that some commands may require an index that comes before the named parameters.
+* **Alternative 2:** Only allow command words to be aliased.
+** Pros: More straightforward to implement.
+** Cons: Limits the usefulness of the command aliasing system, especially for users who may need to use certain commands that contain parameters regularly, e.g. `list s/high by/status`.
+// end::alias[]
+
 // tag::encrypt[]
-=== Data Encryption
+=== Encrypt data
+
+This allows the user to protect his book shelf data with a password so that others cannot gain access to these data.
 
 ==== Current implementation
 
-* **When `encrypt` command is entered**
+===== Encrypt the Bookshelf.xml
+An addition class `CipherEngine` is added to the `Bookshelf` class. This class contatins some methods
+  to encrypt or decrypt file(`Bookshelf.xml`)and `password`. +
+  Note that when 'CipherEngine' encrypt the file, it will use the (encryped)`password`.
 
-. `EncryptCommand` is processed to set isEncrypt to be true.
+  * ** Every time user make change in `Bookshelf` **
 
-. The `Bibliotek` cannot be run any command except `decrypt` and `help` command.
+  . The `model manager` will post an `BookshelfChangedEvent`.
+  . Before saving the data into `Bookshelf.xml`, the system will check whether `Bookshelf` is protected by the `password`(checking
+  whether the `password` is `defaultpassword`: "").
+  . When the `password` is not default, the `Bookshelf.xml` will be encrypted.
 
-* If you enter a wrong key.
+  * ** Every time user set the new `password` **
 
-image::shouldbedecryptfirst.png[width="650"]
+  . The `Setpwcommand` will check the `password`.
+  . If the new `password` is equal to "", the `Lockmanager` will set `isProtected` to be false.
+  . The isProtect will be checked by `xmlBookshelfstorage` whether to  encrypt the "Bookshelf.xml" and save
+   the data into `Bookshelf.xml`.
 
-* **When the `Bibliotek` is encrypted and `decrypt` command is entered**
+  * ** When the system need to be encrypt **
 
-. `DecryptCommandParser` will extract key from the user input.
-. `DecryptCommandParser` creates an `DecryptCommand` the key.
-. `DecryptCommand` is preprocessed to check that key is correct(decode the key from the storage).
-. `DecryptCommand` is processed to set isEncrypt to be false.
+  . The `password` will be encode, and set it to be a key to encrypt the file(`Bookshelf.xml`).
 
-* If your entered key is correct
+===== Lock the book shelf
 
-image::correctkey.png[width="650"]
+An addition class `LockManager` is added to save the password and the situation of the locking system. +
+The default `password` provided for the new user is defaultpassword(""), which means that the `Bookshelf` is not locked.
 
-* If your entered key is wrong
-
-image::wrongkey.png[width="650"]
+  * ** When `Lock` command is entered **
+  . `LockCommand` is processed to set `isLock`(`LockManager`) to be true.
 
 
-* **When `setKey` command is entered**
+NOTE:  . The `Bookshelf` cannot be run any command except `unlock` and `help` command.
 
-. `setKeyCommandParser` will extract the old key and new key from the user input.
-. `setKeyCommandParser` checks that  two parameters are present, and that the parameters are valid.
-. `setKeyCommandParser` creates an `setPasswordCommand` with the parameters.
-. `setPasswordCommand` is preprocessed to check that oldPassword is correct.
-. If the oldKye is correct, `setPasswordCommand` will send a setKey command to LogicManager.
-. LogicManager will send set_new_key request to ModelManger.
-. ModelManager indicate the keyChangedevent and handle it, and set the bookshelf's key to be new key.
-. ModelManager will encode the key, before indicate the keyChangedevent.
-. StorageManager handle the event by update the bibliotek with the new key(encoded key).
+  * **When the `Bookshelf` is locked and `unlock` command is entered**
 
-* If you entered old key is correct.
+  . `UnlockCommandParser` will extract `password` from the user input.
+  . `UnlockCommandParser` creates an `UnlockCommand` for the `password`.
+  . `UnlockCommand` is preprocessed to execute `LockManager`'s unlock(password).
+  . If the password is corrct, the unlock will be run successfully, otherwise it will send a WRONG_PASSWORD commandresult.
+  . `UnlockCommand` is processed to set isLock(LockManager) to be false.
 
-image::setsuccess.png[width="650"]
+  * **When `setpw` command is entered**
 
-* If you entered old key is incorrect.
+  . `setpasswordCommandParser` will extract the old key and new key from the user input.
+  . `setpwParser` checks that  two parameters are valid.
+  . `setpasswordCommandParser` creates an `setpwCommand` with the parameters.
+  . `setpwCommand` is preprocessed to check that oldKey is correct using `LockManager`.
+  . If the oldKey is correct, `setpwCommand` will post a `passwordChangedevent`.
+  . MainApp will handle it, and set `UserPrefs.password` to be new encoded `password`(using cipherEngine).
 
-image::wrongkey(set).png[width="650"]
-
-* The encode key are implement in this way:
-[source,java]
+  * The encode key are implement in this way:
+  [source,java]
 ----
     public static String encrypKey(String mykey) throws Exception {
         byte[] byarray = encrypt(mykey.getBytes(ENCODE), defaultKey.getBytes(ENCODE));
@@ -820,30 +911,27 @@ image::wrongkey(set).png[width="650"]
         return cipher.doFinal(yourkey);
     }
 ----
-The default key "admin" will be stored as:
-
-image::password_admin.png[width="650"]
 // end::encrypt[]
 
 ==== Design considerations
 
 ===== Aspect: Whether to use three commands instead of only one
 
-* **Alternative 1 (current choice):** Use three commands to do the encrypt, decrypt and setkey actions
-** Pros: Users can clearly know what they can do about the key.
-** Cons: Users should learn two more commands
-* **Alternative 2:** Use only one setKey command to solve all three features.
+* **Alternative 1 (current choice):** Use three commands to do the lock, unlock and setpassword actions.
+** Pros: Users can clearly know what they can do about the password.
+** Cons: Users should learn two more commands.
+* **Alternative 2:** Use only one `setpw` command to solve all three features.
 ** Pros: Seem that users can eliminate the typing.
 ** Cons: Users will feel confuse, not so clear about the command.
 
-===== Aspect: Whether to encode the key before store it
+===== Aspect: Whether to encode the password before store it
 
-* **Alternative 1 (current choice):** Stores the encoded key.
-** Pros: Others cannot know users' key easily.
+* **Alternative 1 (current choice):** Stores the encoded password.
+** Pros: Others cannot know users' passwords easily.
 ** Cons: Difficult to implement.
-* **Alternative 2:** Store the text form key.
+* **Alternative 2:** Store the text form password.
 ** Pros: Easy to implement.
-** Cons: Others can know users' key easily.
+** Cons: Others can know users' passwords easily.
 
 === Logging
 
@@ -1575,8 +1663,6 @@ These instructions only provide a starting point for testers to work on; testers
 .. Re-launch the app by double-clicking the jar file. +
    Expected: The most recent window size and location is retained.
 
-_{ more test cases ... }_
-
 === Deleting a book
 
 . Deleting a book while all books are listed
@@ -1589,7 +1675,38 @@ _{ more test cases ... }_
 .. Other incorrect delete commands to try: `delete`, `delete x` (where x is larger than the list size) _{give more}_ +
    Expected: Similar to previous.
 
-_{ more test cases ... }_
+=== Searching for a book in the library
+
+. Prerequisites: Have a non-empty list of books in the left panel.
+. Test case: `library 1` +
+.. Immediately: Bibliotek shows `Searching for the book in the library...`. Everything else remains the same. You are still able to interact with the GUI. +
+.. After some time: Bibliotek shows `Showing availability of book: TITLE - Authors: AUTHORS`. The right panel should start loading (a white screen is first seen). +
+.. When loading is complete: A table with the availability of the book at different libraries is shown in the right panel. +
+.. Exception: Bibliotek shows `Failed to retrieve information from online.` if the request has failed or timed out (10s). This may be because you are not connected to the internet, or the response from NLB Catalogue is slow.
+.. Interrupted: If you performed other commands when `library` is in progress, note that the webpage will still load when the search is done and replace whatever is in the right panel.
+. Test case: `library 0`, `library x` (where x is larger than the list size) +
+..  Expected: Bibliotek shows `The book index provided is invalid`. No change should happen other than the message showing.
+. Test case: `librar 1` (Test integration with command autocorrect) +
+.. Expected: Bibliotek asks whether you meant `library 1`.
+.. If you press Enter, the command should execute the same fashion as test case in (b).
+. Test case: `LiBrArY 1` (Test for case insensitivity) +
+..  Expected: The command executes in the same fashion as test case in (b).
+. Test case: `library` (Test for invalid format) +
+.. Expected: Bibliotek shows message on correct use of `library`.
+
+=== Viewing recently selected books
+
+. Prerequisites: Have a non-empty list of books in the left panel.
+. Assumes: Have not recently selected any books.
+. Test case: `list`, `select 1`, `recent` +
+.. Expected: There is one book in the recently selected books list.
+. Test case: `search hello`, `select 1`, `recent` +
+.. Assumes: Searched completed successfully and selection is made, which is different from selection above.
+.. Expected: There is another book in the recently selected book list, at index 1.
+. Test case: `list`, `select 1`, `recent` +
+.. Expected: The first book is brought up to the first index in the recent books list
+. Test case: `select 2` (in the recent book list) +
+.. Expected: The position of the book selected in the recent book list does not change in the list.
 
 === Saving data
 

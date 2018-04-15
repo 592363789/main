@@ -1,6 +1,9 @@
 package guitests.guihandles;
 
+import java.net.URL;
+
 import javafx.scene.Node;
+import seedu.address.ui.WebViewManager;
 
 //@@author qiu-siqi
 /**
@@ -15,6 +18,13 @@ public class BookInLibraryPanelHandle extends NodeHandle<Node> {
 
     public boolean isVisible() {
         return getRootNode().isVisible();
+    }
+
+    /**
+     * Returns the {@code URL} of the currently loaded page.
+     */
+    public URL getLoadedUrl() {
+        return WebViewUtil.getLoadedUrl(WebViewManager.getInstance().getWebView());
     }
 
 }

@@ -11,9 +11,10 @@ To view my full portfolio, please visit https://danielteo.me/work[danielteo.me, 
 
 == Overview
 
-Bibliotek is a free book cataloguing application. It is targeted at heavy readers who require a hassle-free way of managing and keeping track of their read and unread books.
+Bibliotek is a free book cataloguing application that is simple, fast, and easy to use.
+It is targeted at heavy readers who require a hassle-free way of managing and keeping track of their read and unread books.
 
-The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+Bibliotek has a GUI created with JavaFX, and is written in Java, with approximately 15 kLoC.
 
 == Summary of contributions
 
@@ -24,8 +25,8 @@ It also lays the groundwork for the updated `add` command, which no longer requi
 ** Highlights: This enhancement required the addition of a new component (network component) that supports making HTTP requests to Google Book API endpoints, as well as parsing the JSON responses from these endpoints.
 Thus it required an in-depth analysis of design alternatives. The implementation also required the use of multi-threading to ensure that the UI remains responsive to the user.
 Lastly, this enhancement adds a new command `search` to allow the user to search for books.
-** Credits: the HTTP request is made using the https://github.com/AsyncHttpClient/async-http-client[AsyncHttpClient, window="_blank"] library,
-and parsing of JSON results are accomplished with the help of the https://github.com/FasterXML/jackson[Jackson, window="_blank"] library.
+** Credits: HTTP requests are made using https://github.com/AsyncHttpClient/async-http-client[AsyncHttpClient, window="_blank"],
+and parsing of JSON results are accomplished with the help of https://github.com/FasterXML/jackson[Jackson, window="_blank"].
 
 * *Minor enhancement*: added the ability to *add, view, and delete custom command aliases*: [link:{repoURL}/pull/150[#150]]
 ** Highlights: This enhancement adds three new commands `addalias`, `aliases`, and `deletealias` to add, view, and delete custom command aliases.
@@ -46,16 +47,14 @@ It also updates the command parser to support the use of command aliases, and th
 *** Added instructions for setting up CircleCI: [link:{repoURL}/pull/117[#117]]
 *** Changed the stylesheet used by asciidoc to generate documentation: [link:{repoURL}/pull/55[#55]]
 ** Community:
-*** PRs reviewed (with non-trivial review comments): [link:{repoURL}/pull/66[#66]], [link:{repoURL}/pull/72[#72]], [link:{repoURL}/pull/86[#86]], [link:{repoURL}/pull/111[#111]], [link:{repoURL}/pull/138[#138]], [link:{repoURL}/pull/155[#155]]
+*** PRs reviewed (with non-trivial review comments): [link:{repoURL}/pull/66[#66]], [link:{repoURL}/pull/72[#72]], [link:{repoURL}/pull/86[#86]], [link:{repoURL}/pull/111[#111]], [link:{repoURL}/pull/138[#138]], [link:{repoURL}/pull/155[#155]], [link:{repoURL}/pull/188[#188]]
 *** Reported bugs and suggestions for other teams in the class (issues https://github.com/CS2103JAN2018-W15-B2/main/issues/163[#163],
 https://github.com/CS2103JAN2018-W15-B2/main/issues/170[#170], https://github.com/CS2103JAN2018-W15-B2/main/issues/172[#172], https://github.com/CS2103JAN2018-W15-B2/main/issues/175[#175],
 https://github.com/CS2103JAN2018-W15-B2/main/issues/177[#177], https://github.com/CS2103JAN2018-W15-B2/main/issues/179[#179])
 ** Tools:
 *** Integrated a third party library (AsyncHttpClient) to the project: [link:{repoURL}/pull/58[#58]]
 *** Integrated a third party testing framework (Mockito) to the project: [link:{repoURL}/pull/88[#88]]
-*** Integrated TravisCI, AppVeyor, Coveralls, Codacy, and Netlify to the team repo
-*** Integrated a new Github plugin (CircleCI) to the team repo
-*** Changed build configuration to allow running JUnit tests in parallel: [link:{repoURL}/pull/96[#96]]
+*** Integrated CircleCI, TravisCI, AppVeyor, Coveralls, Codacy, and Netlify to the team repo
 
 == Contributions to the User Guide
 
@@ -78,3 +77,5 @@ As part of the implementation of the search feature, the network component was a
 An overview of the network component can be found in <<../DeveloperGuide#Design-Network, the Developer Guide>>.
 
 include::../DeveloperGuide.adoc[tag=search2]
+
+include::../DeveloperGuide.adoc[tag=alias]

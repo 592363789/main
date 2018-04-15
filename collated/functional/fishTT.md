@@ -83,6 +83,8 @@ public class HintParser {
             return generateHintForIndexedCommand(arguments, " find book in library");
         case ListCommand.COMMAND_WORD:
             return generateListHint(arguments);
+        case LockCommand.COMMAND_WORD:
+            return " lock the app";
         case RecentCommand.COMMAND_WORD:
             return " view recently selected books";
         case ReviewsCommand.COMMAND_WORD:
@@ -91,10 +93,14 @@ public class HintParser {
             return generateSearchHint(arguments);
         case SelectCommand.COMMAND_WORD:
             return generateHintForIndexedCommand(arguments, " select a book");
+        case SetPasswordCommand.COMMAND_WORD:
+            return generateSetPasswordHint(arguments);
         case ThemeCommand.COMMAND_WORD:
             return generateThemeHint(arguments);
         case UndoCommand.COMMAND_WORD:
             return " undo last modification";
+        case UnlockCommand.COMMAND_WORD:
+            return generateUnlockHint(arguments);
         default:
             return "";
         }
@@ -117,7 +123,7 @@ public class HintParser {
                 return getHintPadding(arguments) + p.getPrefix() + prefixIntoParameter(p);
             }
         }
-        return getHintPadding(arguments) + defaultHint;
+        return defaultHint;
     }
 
     /**
@@ -141,6 +147,10 @@ public class HintParser {
             return "RATING";
         case PREFIX_SORT_BY_STRING:
             return "SORT_BY";
+        case PREFIX_OLD_STRING:
+            return "OLD_PASSWORD";
+        case PREFIX_NEW_STRING:
+            return "NEW_PASSWORD";
         case PREFIX_COMMAND_STRING:
             return "COMMAND";
         default:

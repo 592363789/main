@@ -1,21 +1,37 @@
 package seedu.address.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_BOOKS;
 import static seedu.address.testutil.TypicalBooks.ARTEMIS;
 import static seedu.address.testutil.TypicalBooks.BABYLON_ASHES;
+import static seedu.address.testutil.TypicalBooks.getTypicalBookShelf;
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import seedu.address.logic.LockManager;
 import seedu.address.model.alias.Alias;
 import seedu.address.testutil.BookShelfBuilder;
 
 public class ModelManagerTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+
+    @After
+    public void tearDown() {
+        LockManager.getInstance().initialize(LockManager.NO_PASSWORD);
+    }
+
+    @Test
+    public void constructor_isPasswordProtected_hideAllBooks() {
+        LockManager.getInstance().initialize("invalid$11$11$invalid$invalid");
+        ModelManager modelManager = new ModelManager(getTypicalBookShelf(), new UserPrefs());
+        assertEquals(0, modelManager.getDisplayBookList().size());
+    }
 
     @Test
     public void getDisplayBookList_modifyList_throwsUnsupportedOperationException() {

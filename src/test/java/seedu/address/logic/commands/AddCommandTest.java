@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.prepareUndoCommand;
-import static seedu.address.testutil.TypicalBooks.getTypicalBookShelf;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_BOOK;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_BOOK;
 
@@ -26,7 +25,6 @@ import seedu.address.commons.events.ui.NewResultAvailableEvent;
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.UndoStack;
 import seedu.address.model.ActiveListType;
-import seedu.address.model.BookShelf;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -54,8 +52,8 @@ public class AddCommandTest {
      */
     @Before
     public void setUp() {
-        model = new ModelManager(new BookShelf(), new UserPrefs());
-        prepareSearchResultListInModel(model);
+        model = new ModelManager();
+        TestUtil.prepareSearchResultListInModel(model);
     }
 
     @Test
@@ -79,7 +77,7 @@ public class AddCommandTest {
     @Test
     public void execute_validIndexSearchResults_success() throws Exception {
         ModelManager expectedModel = new ModelManager();
-        prepareSearchResultListInModel(expectedModel);
+        TestUtil.prepareSearchResultListInModel(expectedModel);
         expectedModel.addBook(model.getSearchResultsList().get(0));
 
         assertExecutionSuccess(INDEX_FIRST_BOOK, model.getSearchResultsList().get(0), expectedModel);
@@ -94,11 +92,11 @@ public class AddCommandTest {
 
     @Test
     public void execute_validIndexRecentBooks_success() throws Exception {
-        prepareRecentBooksListInModel(model);
+        TestUtil.prepareRecentBooksListInModel(model);
 
         ModelManager expectedModel = new ModelManager();
-        prepareSearchResultListInModel(expectedModel);
-        prepareRecentBooksListInModel(expectedModel);
+        TestUtil.prepareSearchResultListInModel(expectedModel);
+        TestUtil.prepareRecentBooksListInModel(expectedModel);
         expectedModel.addBook(model.getRecentBooksList().get(0));
 
         assertExecutionSuccess(INDEX_FIRST_BOOK, model.getRecentBooksList().get(0), expectedModel);
@@ -106,7 +104,7 @@ public class AddCommandTest {
 
     @Test
     public void execute_invalidIndexRecentBooks_failure() {
-        prepareRecentBooksListInModel(model);
+        TestUtil.prepareRecentBooksListInModel(model);
 
         AddCommand addCommand = prepareCommand(Index.fromOneBased(model.getRecentBooksList().size() + 1));
 
@@ -116,7 +114,7 @@ public class AddCommandTest {
     @Test
     public void executeUndo_validIndex_success() throws Exception {
         ModelManager expectedModel = new ModelManager(model.getBookShelf(), new UserPrefs());
-        prepareSearchResultListInModel(expectedModel);
+        TestUtil.prepareSearchResultListInModel(expectedModel);
         UndoStack undoStack = new UndoStack();
         UndoCommand undoCommand = prepareUndoCommand(model, undoStack);
 
@@ -197,26 +195,6 @@ public class AddCommandTest {
 
         // different book -> returns false
         assertFalse(addFirstCommand.equals(addSecondCommand));
-    }
-
-    /**
-     * Set up {@code model} with a non-empty search result list and
-     * switch active list to search results list.
-     */
-    private void prepareSearchResultListInModel(Model model) {
-        model.setActiveListType(ActiveListType.SEARCH_RESULTS);
-        BookShelf bookShelf = getTypicalBookShelf();
-        model.updateSearchResults(bookShelf);
-    }
-
-    /**
-     * Set up {@code model} with a non-empty recently selected books list and
-     * switch active list to recent books list.
-     */
-    private void prepareRecentBooksListInModel(Model model) {
-        model.setActiveListType(ActiveListType.RECENT_BOOKS);
-        BookShelf bookShelf = getTypicalBookShelf();
-        bookShelf.getBookList().forEach(model::addRecentBook);
     }
 
     /**

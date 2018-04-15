@@ -1,5 +1,7 @@
 package systemtests;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import guitests.GuiRobot;
@@ -16,6 +18,8 @@ import seedu.address.model.book.Book;
 //@@author qiu-siqi
 public class LibraryCommandSystemTest extends BibliotekSystemTest {
 
+    private static final String NLB_CATALOGUE_URL = "catalogue.nlb.gov.sg";
+
     @Test
     public void library() {
 
@@ -24,8 +28,11 @@ public class LibraryCommandSystemTest extends BibliotekSystemTest {
         ObservableList<Book> bookList = getModel().getDisplayBookList();
 
         assertCommandSuccess(LibraryCommand.COMMAND_WORD + " 1", bookList.get(0));
+        assertValidUrlLoaded();
+
         assertCommandSuccess(LibraryCommand.COMMAND_WORD + " " + bookList.size(),
                 bookList.get(bookList.size() - 1));
+        assertValidUrlLoaded();
 
         assertCommandFailure(LibraryCommand.COMMAND_WORD + " " + (bookList.size() + 1),
                 Messages.MESSAGE_INVALID_BOOK_DISPLAYED_INDEX);
@@ -86,5 +93,12 @@ public class LibraryCommandSystemTest extends BibliotekSystemTest {
         assertCommandBoxShowsDefaultStyle();
         assertBookInLibraryPanelVisible();
         assertStatusBarUnchanged();
+    }
+
+    /**
+     * Verifies that some NLB catalogue page is being loaded.
+     */
+    private void assertValidUrlLoaded() {
+        assertTrue(getBookInLibraryPanel().getLoadedUrl().toExternalForm().contains(NLB_CATALOGUE_URL));
     }
 }

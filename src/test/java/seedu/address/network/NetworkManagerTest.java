@@ -116,8 +116,7 @@ public class NetworkManagerTest {
 
     @Test
     public void nlbCatalogueApiSearchForBooks_failure() throws Exception {
-        when(mockNlbCatalogueApi.searchForBook(BOOK_FAILURE))
-                .thenReturn(TestUtil.getFailedFuture());
+        when(mockNlbCatalogueApi.searchForBook(BOOK_FAILURE)).thenReturn(TestUtil.getFailedFuture());
 
         CompletableFuture<String> result = networkManager.searchLibraryForBook(BOOK_FAILURE);
         verify(mockNlbCatalogueApi).searchForBook(BOOK_FAILURE);

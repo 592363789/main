@@ -72,8 +72,7 @@ public class NlbResultHelperTest {
     @Test
     public void getUrl_validResponseNoResults() throws Exception {
         String content = FileUtil.readFromFile(VALID_RESPONSE_NO_RESULTS);
-        Book book = new BookBuilder()
-                .withTitle("xxxxxxxxxxxxxxxxxxxxxx").withAuthors("yyyyyyyyy").build();
+        Book book = new BookBuilder().withTitle("xxxxxxxxxxxxxxxxxxxxxx").withAuthors("yyyyyyyyy").build();
         assertEquals(VALID_RESPONSE_NO_RESULTS_URL, NlbResultHelper.getUrl(content, book));
 
     }

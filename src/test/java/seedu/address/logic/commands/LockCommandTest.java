@@ -1,5 +1,5 @@
 package seedu.address.logic.commands;
-
+//@@author 592363789
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,7 +18,6 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.network.Network;
 
-//@@author 592363789
 public class LockCommandTest {
 
     private Model model;
@@ -30,7 +29,7 @@ public class LockCommandTest {
 
     @After
     public void tearDown() {
-        LockManager.getInstance().unlock(LockManager.getInstance().getPassword());
+        LockManager.getInstance().initialize(LockManager.NO_PASSWORD);
     }
 
     @Test

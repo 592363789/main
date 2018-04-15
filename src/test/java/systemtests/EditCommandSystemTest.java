@@ -55,7 +55,45 @@ public class EditCommandSystemTest extends BibliotekSystemTest {
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + " " + PREFIX_RATING + "-1";
         editedBook = new BookBuilder(bookToEdit).withRating(-1).build();
         assertCommandSuccess(command, index, editedBook);
+        //@@author 592363789
+        /* Case: non-priority book -> non-priority */
+        index = Index.fromOneBased(getModel().getDisplayBookList().size());
+        bookToEdit = getModel().getDisplayBookList().get(index.getZeroBased());
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + " " + PREFIX_PRIORITY + "n";
+        editedBook = new BookBuilder(bookToEdit).withPriority(Priority.NONE).build();
+        assertCommandSuccess(command, index, editedBook);
 
+        /* Case: unread book -> unread */
+        index = Index.fromOneBased(getModel().getDisplayBookList().size());
+        bookToEdit = getModel().getDisplayBookList().get(index.getZeroBased());
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + " " + PREFIX_STATUS + "u";
+        editedBook = new BookBuilder(bookToEdit).withStatus(Status.UNREAD).build();
+        assertCommandSuccess(command, index, editedBook);
+
+        /* Case: edit two fields -> rating and status */
+        index = Index.fromOneBased(getModel().getDisplayBookList().size());
+        bookToEdit = getModel().getDisplayBookList().get(index.getZeroBased());
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + " " + PREFIX_STATUS + "u" + " "
+                + PREFIX_RATING + "4";
+        editedBook = new BookBuilder(bookToEdit).withStatus(Status.UNREAD).withRating(4).build();
+        assertCommandSuccess(command, index, editedBook);
+
+        /* Case: edit two fields -> rating and priority */
+        index = Index.fromOneBased(getModel().getDisplayBookList().size());
+        bookToEdit = getModel().getDisplayBookList().get(index.getZeroBased());
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + " " + PREFIX_PRIORITY + "h"
+                + " " + PREFIX_RATING + "0";
+        editedBook = new BookBuilder(bookToEdit).withPriority(Priority.HIGH).withRating(0).build();
+        assertCommandSuccess(command, index, editedBook);
+
+        /* Case: edit two fields -> status and priority */
+        index = Index.fromOneBased(getModel().getDisplayBookList().size());
+        bookToEdit = getModel().getDisplayBookList().get(index.getZeroBased());
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + " " + PREFIX_STATUS + "r"
+                + " " + PREFIX_PRIORITY + "l";
+        editedBook = new BookBuilder(bookToEdit).withStatus(Status.READ).withPriority(Priority.LOW).build();
+        assertCommandSuccess(command, index, editedBook);
+        //@@author
         /* ------------------ Performing edit operation while a filtered list is being shown ------------------------ */
 
         /* Case: filtered book list, edit index within bounds of book shelf and book list -> edited */
@@ -121,6 +159,32 @@ public class EditCommandSystemTest extends BibliotekSystemTest {
         /* Case: invalid rating -> rejected */
         assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_BOOK.getOneBased() + " "
                 + PREFIX_RATING + "100", Messages.MESSAGE_INVALID_RATING);
+        //@@author 592363789
+        /* Case: valid rating + invalid status -> rejected */
+        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_BOOK.getOneBased() + " "
+                + PREFIX_RATING + "3" + " " + PREFIX_STATUS + "STATUS", Messages.MESSAGE_INVALID_STATUS);
+
+        /* Case: valid rating + invalid priority -> rejected */
+        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_BOOK.getOneBased() + " "
+                + PREFIX_RATING + "3" + " " + PREFIX_PRIORITY + "priority", Messages.MESSAGE_INVALID_PRIORITY);
+
+        /* Case: valid priority + invalid status -> rejected */
+        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_BOOK.getOneBased() + " "
+                + PREFIX_PRIORITY + "h" + " " + PREFIX_STATUS + "STATUS", Messages.MESSAGE_INVALID_STATUS);
+
+        /* Case: valid priority + invalid rating -> rejected */
+        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_BOOK.getOneBased() + " "
+                + PREFIX_RATING + "-100" + " " + PREFIX_STATUS + "r", Messages.MESSAGE_INVALID_RATING);
+
+        /* Case: valid status + invalid rating -> rejected */
+        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_BOOK.getOneBased() + " "
+                + PREFIX_RATING + "-3" + " " + PREFIX_STATUS + "r", Messages.MESSAGE_INVALID_RATING);
+
+        /* Case: valid status + invalid priority -> rejected */
+        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_BOOK.getOneBased() + " "
+                + PREFIX_PRIORITY + "highpriority" + " " + PREFIX_STATUS
+                + "r", Messages.MESSAGE_INVALID_PRIORITY);
+        //@@author
     }
 
     /**

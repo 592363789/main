@@ -1,5 +1,6 @@
 package seedu.address.logic;
 
+import static seedu.address.commons.core.Messages.MESSAGE_APP_LOCKED;
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import java.util.logging.Logger;
@@ -87,7 +88,7 @@ public class LogicManager extends ComponentManager implements Logic {
 
             if (LockManager.getInstance().isLocked()
                     && !(command instanceof HelpCommand || command instanceof UnlockCommand)) {
-                return new CommandResult("The app is locked, please unlock it first!");
+                return new CommandResult(MESSAGE_APP_LOCKED);
             }
 
             if (command instanceof UnlockCommand || command instanceof SetPasswordCommand) {

@@ -49,6 +49,19 @@ public enum Theme {
 
 }
 ```
+###### \java\seedu\address\commons\util\StringUtil.java
+``` java
+    /**
+     * Returns a random 8 character string to be used as a prefix to a filename.
+     */
+    public static String generateRandomPrefix() {
+        byte[] randomBytes = new byte[RANDOM_BYTE_LENGTH];
+        new Random().nextBytes(randomBytes);
+        byte[] encodedBytes = Base64.getEncoder().encode(randomBytes);
+        return new String(encodedBytes).replace("/", "-");
+    }
+}
+```
 ###### \java\seedu\address\logic\commands\AddAliasCommand.java
 ``` java
 /**
@@ -195,8 +208,8 @@ public class ListCommand extends Command {
         // Clear to prevent invalid selections due to changes in observed list
         EventsCenter.getInstance().post(new ClearMainContentRequestEvent());
 
-        model.updateBookListFilter(filterDescriptor.buildCombinedFilter());
         model.updateBookListSorter(bookComparator);
+        model.updateBookListFilter(filterDescriptor.buildCombinedFilter());
         model.setActiveListType(ActiveListType.BOOK_SHELF);
         EventsCenter.getInstance().post(new ActiveListChangedEvent());
         return new CommandResult(String.format(MESSAGE_SUCCESS, model.getDisplayBookList().size()));
@@ -539,7 +552,7 @@ public class ThemeCommand extends Command {
 public class AddAliasCommandParser implements Parser<AddAliasCommand> {
 
     private static final Pattern ALIAS_FORMAT = Pattern.compile("^\\S+$");
-    private static final Pattern COMMAND_FORMAT = Pattern.compile("(?<prefix>((?! \\w+\\/.*)[\\S ])+)(?<arguments>.*)");
+    private static final Pattern COMMAND_FORMAT = Pattern.compile("(?<prefix>((?! \\w+\\/.*)[\\S ])+)(?<namedArgs>.*)");
 
     @Override
     public AddAliasCommand parse(String args) throws ParseException {
@@ -583,7 +596,7 @@ public class AddAliasCommandParser implements Parser<AddAliasCommand> {
     }
 
     private static Alias createAlias(String aliasName, Matcher commandMatcher) {
-        return new Alias(aliasName, commandMatcher.group("prefix"), commandMatcher.group("arguments"));
+        return new Alias(aliasName, commandMatcher.group("prefix"), commandMatcher.group("namedArgs"));
     }
 
     private static void checkCommandFormat(boolean condition) throws ParseException {
@@ -600,8 +613,6 @@ public class AddAliasCommandParser implements Parser<AddAliasCommand> {
      */
     private static final Pattern ALIASED_COMMAND_FORMAT =
             Pattern.compile(" *(?<aliasName>\\S+)(?<unnamedArgs>((?! [\\w]+\\/.*)[\\S ])*)(?<namedArgs>.*)");
-
-    private static final int MAX_COMMAND_WORD_LENGTH = 12;
 
     private final ReadOnlyAliasList aliases;
 

@@ -1,14 +1,17 @@
 package seedu.address.testutil;
 
+import static seedu.address.testutil.TypicalBooks.getTypicalBookShelf;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.FileUtil;
+import seedu.address.commons.util.StringUtil;
+import seedu.address.model.ActiveListType;
+import seedu.address.model.BookShelf;
 import seedu.address.model.Model;
 import seedu.address.model.book.Book;
 
@@ -21,7 +24,6 @@ public class TestUtil {
      * Folder used for temp files created during testing. Ignored by Git.
      */
     private static final String SANDBOX_FOLDER = FileUtil.getPath("./build/tmp/sandbox/");
-    private static final int RANDOM_BYTE_LENGTH = 9;
     private static final String PREFIX_SEPARATOR = "_";
 
     /**
@@ -34,7 +36,7 @@ public class TestUtil {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        String randomizedFileName = generateRandomPrefix() + PREFIX_SEPARATOR + fileName;
+        String randomizedFileName = StringUtil.generateRandomPrefix() + PREFIX_SEPARATOR + fileName;
         return SANDBOX_FOLDER + randomizedFileName;
     }
 
@@ -70,13 +72,24 @@ public class TestUtil {
         });
     }
 
+    //@@author qiu-siqi
     /**
-     * Returns a random 8 character string to be used as a prefix to a filename.
+     * Sets up {@code model} with a non-empty search result list and
+     * switches active list to search results list.
      */
-    private static String generateRandomPrefix() {
-        byte[] randomBytes = new byte[RANDOM_BYTE_LENGTH];
-        new Random().nextBytes(randomBytes);
-        byte[] encodedBytes = Base64.getEncoder().encode(randomBytes);
-        return new String(encodedBytes).replace("/", "-");
+    public static void prepareSearchResultListInModel(Model model) {
+        model.setActiveListType(ActiveListType.SEARCH_RESULTS);
+        BookShelf bookShelf = getTypicalBookShelf();
+        model.updateSearchResults(bookShelf);
+    }
+
+    /**
+     * Sets up {@code model} with a non-empty recently selected books list and
+     * switches active list to recent books list.
+     */
+    public static void prepareRecentBooksListInModel(Model model) {
+        model.setActiveListType(ActiveListType.RECENT_BOOKS);
+        BookShelf bookShelf = getTypicalBookShelf();
+        bookShelf.getBookList().forEach(model::addRecentBook);
     }
 }

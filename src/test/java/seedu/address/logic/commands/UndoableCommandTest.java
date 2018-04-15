@@ -30,7 +30,6 @@ public class UndoableCommandTest {
 
         showBookAtIndex(model, INDEX_FIRST_BOOK);
 
-        // undo() should cause the model's filtered list to show all books
         dummyCommand.undo();
         expectedModel = new ModelManager(getTypicalBookShelf(), new UserPrefs());
         assertEquals(expectedModel, model);
